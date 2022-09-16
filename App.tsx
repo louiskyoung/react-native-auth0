@@ -1,119 +1,64 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
+import React, {useState} from 'react';
+import {Alert, Button, StyleSheet, Text, View} from 'react-native';
+import Auth0 from 'react-native-auth0';
 
-import React, {type PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+const auth0Config = {
+  domain: 'dev-k3rdl0yf.us.auth0.com',
+  clientId: 'AdR4LecX3TBlejhcRuDnFKjrU7Gh6qlY',
+};
+const auth0 = new Auth0(auth0Config);
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const App = () => {
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
-const Section: React.FC<
-  PropsWithChildren<{
-    title: string;
-  }>
-> = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
+  const onLogin = () => {
+    auth0.webAuth
+      .authorize({
+        scope: 'openid profile email',
+      })
+      .then(credentials => {
+        Alert.alert('AccessToken: ' + credentials.accessToken);
+        setAccessToken(credentials.accessToken);
+      })
+      .catch(error => console.log(error));
+  };
+
+  const onLogout = () => {
+    auth0.webAuth
+      .clearSession({})
+      .then(() => {
+        Alert.alert('Logged out!');
+        setAccessToken(null);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const loggedIn = accessToken !== null;
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.header}> Auth0Sample - Login </Text>
+      <Text>You are{loggedIn ? ' ' : ' not '}logged in. </Text>
+      <Button
+        onPress={loggedIn ? onLogout : onLogin}
+        title={loggedIn ? 'Log Out' : 'Log In'}
+      />
     </View>
   );
 };
 
-const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  header: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
   },
 });
 
