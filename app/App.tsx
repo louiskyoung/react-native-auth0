@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
-import { Alert, Button, StyleSheet, Text, View } from 'react-native';
 import Auth0 from 'react-native-auth0';
+import { SafeAreaView, ActivityIndicator } from 'react-native';
+import styled from 'styled-components/native';
+
+import Welcome from './screens/Welcome';
+import Home from './screens/Home';
 
 const auth0Config = {
   domain: 'dev-k3rdl0yf.us.auth0.com',
@@ -8,58 +12,58 @@ const auth0Config = {
 };
 const auth0 = new Auth0(auth0Config);
 
-const App = () => {
-  const [accessToken, setAccessToken] = useState<string | null>(null);
+const AppLayout = styled(SafeAreaView)`
+  flex: 1;
+  background-color: #030720;
+  padding: 30px;
+`;
 
-  const onLogin = () => {
+function App() {
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const isLoggedIn = accessToken !== null;
+
+  function handleLogin() {
+    setIsLoading(true);
     auth0.webAuth
       .authorize({
         scope: 'openid profile email',
       })
-      .then((credentials) => {
-        Alert.alert('AccessToken: ' + credentials.accessToken);
+      .then(credentials => {
         setAccessToken(credentials.accessToken);
+        setIsLoading(false);
       })
-      .catch((error) => console.log(error));
-  };
+      .catch(error => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  }
 
-  const onLogout = () => {
+  function handleLogout() {
+    setIsLoading(true);
     auth0.webAuth
       .clearSession({})
       .then(() => {
-        Alert.alert('Logged out!');
         setAccessToken(null);
+        setIsLoading(false);
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err);
+        setIsLoading(false);
       });
-  };
+  }
 
-  const loggedIn = accessToken !== null;
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}> Auth0Sample - Login </Text>
-      <Text>You are{loggedIn ? ' ' : ' not '}logged in. </Text>
-      <Button
-        onPress={loggedIn ? onLogout : onLogin}
-        title={loggedIn ? 'Log Out' : 'Log In'}
-      />
-    </View>
+    <AppLayout>
+      <ActivityIndicator size="large" animating={isLoading} />
+      {!isLoading &&
+        (isLoggedIn ? (
+          <Home handleLogout={handleLogout} />
+        ) : (
+          <Welcome handleLogin={handleLogin} />
+        ))}
+    </AppLayout>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#124257',
-  },
-  header: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-});
+}
 
 export default App;
