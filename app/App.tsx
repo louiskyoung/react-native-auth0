@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Alert, Button, StyleSheet, Text, View} from 'react-native';
+import React, { useState } from 'react';
+import { Alert, Button, StyleSheet, Text, View } from 'react-native';
 import Auth0 from 'react-native-auth0';
 
 const auth0Config = {
@@ -16,11 +16,11 @@ const App = () => {
       .authorize({
         scope: 'openid profile email',
       })
-      .then(credentials => {
+      .then((credentials) => {
         Alert.alert('AccessToken: ' + credentials.accessToken);
         setAccessToken(credentials.accessToken);
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   };
 
   const onLogout = () => {
@@ -30,7 +30,7 @@ const App = () => {
         Alert.alert('Logged out!');
         setAccessToken(null);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#124257',
   },
   header: {
     fontSize: 20,
