@@ -58,7 +58,7 @@ function App() {
       <ActivityIndicator size="large" animating={isLoading} />
       {!isLoading &&
         (isLoggedIn ? (
-          <Home handleLogout={handleLogout} />
+          <Home handleLogout={handleLogout} accessToken={accessToken} />
         ) : (
           <Welcome handleLogin={handleLogin} />
         ))}
