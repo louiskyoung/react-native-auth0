@@ -10,8 +10,10 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@types/react-native-auth0": "^2.13.1",
     "react": "18.1.0",
-    "react-native": "0.70.1"
+    "react-native": "0.70.1",
+    "react-native-auth0": "^2.13.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
