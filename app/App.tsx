@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
-import Auth0 from 'react-native-auth0';
 import { SafeAreaView, ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 
 import Welcome from './screens/Welcome';
-import Home from './screens/Home';
-
-const auth0Config = {
-  domain: 'dev-k3rdl0yf.us.auth0.com',
-  clientId: 'AdR4LecX3TBlejhcRuDnFKjrU7Gh6qlY',
-};
-const auth0 = new Auth0(auth0Config);
+import { Home } from './screens/Home';
+import { auth0Service } from './auth0';
 
 const AppLayout = styled(SafeAreaView)`
   flex: 1;
@@ -25,7 +19,7 @@ function App() {
 
   function handleLogin() {
     setIsLoading(true);
-    auth0.webAuth
+    auth0Service.webAuth
       .authorize({
         scope: 'openid profile email',
       })
@@ -41,14 +35,14 @@ function App() {
 
   function handleLogout() {
     setIsLoading(true);
-    auth0.webAuth
+    auth0Service.webAuth
       .clearSession({})
       .then(() => {
         setAccessToken(null);
         setIsLoading(false);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
         setIsLoading(false);
       });
   }
@@ -56,12 +50,15 @@ function App() {
   return (
     <AppLayout>
       <ActivityIndicator size="large" animating={isLoading} />
-      {!isLoading &&
-        (isLoggedIn ? (
-          <Home handleLogout={handleLogout} accessToken={accessToken} />
-        ) : (
-          <Welcome handleLogin={handleLogin} />
-        ))}
+      {isLoggedIn ? (
+        <Home
+          handleLogout={handleLogout}
+          accessToken={accessToken}
+          setIsLoading={setIsLoading}
+        />
+      ) : (
+        <Welcome handleLogin={handleLogin} />
+      )}
     </AppLayout>
   );
 }

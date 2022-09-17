@@ -2,9 +2,9 @@ import React from 'react';
 import { View, Text, Button } from 'react-native';
 import styled from 'styled-components/native';
 
-interface Props {
+type Props = {
   handleLogin: () => void;
-}
+};
 
 const Container = styled(View)`
   flex: 1;
