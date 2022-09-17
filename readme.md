@@ -4,10 +4,16 @@ We have web api published on Azure, secured by JWT. We use Auth0 for user manage
 
 ## To Install
 
-Clone the repository and install the dependencies with [Yarn](https://yarnpkg.com):
+Clone the repository and install the dependencies:
 
 ```bash
 yarn install
+```
+
+OR
+
+```bash
+npm install
 ```
 
 ### iOS Applications only
@@ -23,5 +29,5 @@ pod install
 
 Run your app on an emulator, simulator, or your own connected device.
 
-- To run the app on Android run `yarn run android`.
-- To run the app on iOS run `yarn run ios`.
+- To run the app on Android run `yarn android` or `npm run android`.
+- To the app on iOS run `yarn ios` or `npm run ios`.
